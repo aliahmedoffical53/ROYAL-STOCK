@@ -21,7 +21,7 @@ h3{margin:8px 0}.tot{font-size:20px;font-weight:700;margin:8px 0}
 <header id="hd">Stock</header><main id="m">Loading...</main>
 <nav id="nv"></nav>
 <script>
-const API='PASTE_WEB_APP_URL_HERE';
+const API='https://script.google.com/macros/s/AKfycbxQ17pXtTD7_34HxAIPzzZzwfyeFRu8m1h2IA6Oy8YJvcLu2VElDYjo8ZXAqr5ON0IniA/exec';
 let K=localStorage.pin||(localStorage.pin=prompt('PIN daalein')),D={products:[],parties:[]},tab='sale',cart={},
 rates=JSON.parse(localStorage.rates||'{}'),today=()=>new Date().toISOString().slice(0,10);
 const $=i=>document.getElementById(i),v=i=>$(i).value;
