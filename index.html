@@ -6,41 +6,41 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
 <style>
-:root{--g:#D4AF37;--g2:#f6dc85;--bg:#070707;--c:#151515;--l:rgba(212,175,55,.28);--t:#f3efe3;--m:#9a937f;--r:#ff6b5e;--ok:#5ad08a}
+:root{--n:#0B1F3A;--g:#B8901F;--g2:#E2C15A;--bg:#FAF7F0;--c:#fff;--l:rgba(11,31,58,.14);--t:#14213a;--m:#6b7280;--r:#c0392b;--ok:#1e8e5a}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-body{margin:0;font:16px system-ui,-apple-system,Segoe UI,sans-serif;background:radial-gradient(120% 60% at 50% 0,#1d1708,#070707 60%);color:var(--t);min-height:100vh;padding-bottom:84px}
-header{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:10px;padding:10px 14px;padding-top:calc(10px + env(safe-area-inset-top));background:rgba(0,0,0,.85);backdrop-filter:blur(10px);border-bottom:1px solid var(--l)}
-header img{width:38px;height:38px;border-radius:10px}header h1{flex:1;margin:0;font-size:17px;letter-spacing:.5px;background:linear-gradient(90deg,var(--g),var(--g2));-webkit-background-clip:text;color:transparent}
-header a{color:var(--m);font-size:13px;padding:6px 8px;border:1px solid var(--l);border-radius:8px;cursor:pointer}
+body{margin:0;font:16px system-ui,-apple-system,Segoe UI,sans-serif;background:radial-gradient(120% 50% at 50% 0,#fff,#FAF7F0 60%);color:var(--t);min-height:100vh;padding-bottom:84px}
+header{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:10px;padding:10px 14px;padding-top:calc(10px + env(safe-area-inset-top));background:rgba(11,31,58,.97);backdrop-filter:blur(10px);box-shadow:0 4px 18px rgba(11,31,58,.18)}
+header img{width:38px;height:38px;border-radius:10px}header h1{flex:1;margin:0;font-size:17px;letter-spacing:.5px;background:linear-gradient(90deg,#f6dc85,#D4AF37);-webkit-background-clip:text;color:transparent}
+header a{color:#d5ddec;font-size:13px;padding:6px 8px;border:1px solid rgba(255,255,255,.25);border-radius:8px;cursor:pointer}
 main{padding:14px;max-width:560px;margin:auto;animation:in .35s ease}
 @keyframes in{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
 @keyframes pop{0%{transform:scale(.9);opacity:0}100%{transform:none;opacity:1}}
 @keyframes glow{0%,100%{box-shadow:0 0 18px rgba(212,175,55,.25)}50%{box-shadow:0 0 42px rgba(212,175,55,.6)}}
-nav{position:fixed;bottom:0;left:0;right:0;display:flex;background:rgba(0,0,0,.92);backdrop-filter:blur(10px);border-top:1px solid var(--l);padding-bottom:env(safe-area-inset-bottom);z-index:6}
+nav{position:fixed;bottom:0;left:0;right:0;display:flex;box-shadow:0 -4px 18px rgba(11,31,58,.08);background:rgba(255,255,255,.96);backdrop-filter:blur(10px);border-top:1px solid var(--l);padding-bottom:env(safe-area-inset-bottom);z-index:6}
 nav button{flex:1;padding:9px 0 8px;background:none;border:0;color:var(--m);font-size:11px;transition:.2s}nav button i{display:block;font-style:normal;font-size:20px;transition:.2s}
-nav .on{color:var(--g)}nav .on i{transform:translateY(-3px) scale(1.15)}
-input,select{width:100%;padding:13px;margin:5px 0 10px;border:1px solid var(--l);border-radius:12px;font-size:16px;background:#101010;color:var(--t);outline:0;transition:.2s}
+nav .on{color:var(--n);font-weight:700}nav .on i{transform:translateY(-3px) scale(1.15)}
+input,select{width:100%;padding:13px;margin:5px 0 10px;border:1px solid var(--l);border-radius:12px;font-size:16px;background:#fff;color:var(--t);outline:0;transition:.2s}
 input:focus,select:focus{border-color:var(--g);box-shadow:0 0 0 3px rgba(212,175,55,.15)}
 label{font-size:12px;color:var(--m);letter-spacing:.6px;text-transform:uppercase}
-.card{background:var(--c);border:1px solid var(--l);border-radius:16px;padding:12px;margin-bottom:10px;animation:pop .3s ease}
+.card{background:var(--c);border:1px solid var(--l);box-shadow:0 4px 16px rgba(11,31,58,.06);border-radius:16px;padding:12px;margin-bottom:10px;animation:pop .3s ease}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:14px}
-.p{padding:13px 10px;border:1px solid var(--l);border-radius:14px;background:linear-gradient(160deg,#1b1b1b,#101010);color:var(--t);text-align:left;font-size:15px;transition:.15s;animation:pop .3s ease}
+.p{padding:13px 10px;border:1px solid var(--l);border-radius:14px;background:linear-gradient(160deg,#fff,#f6f0df);color:var(--t);text-align:left;font-size:15px;transition:.15s;animation:pop .3s ease}
 .p:active,.go:active,.sm:active{transform:scale(.95)}.p small{display:block;color:var(--m);margin-top:3px}.p.low small{color:var(--r);font-weight:700}
-.go{width:100%;padding:15px;border:0;border-radius:14px;font-size:17px;font-weight:700;color:#1a1300;background:linear-gradient(135deg,var(--g2),var(--g) 55%,#a8801c);box-shadow:0 6px 20px rgba(212,175,55,.25);transition:.15s}
+.go{width:100%;padding:15px;border:0;border-radius:14px;font-size:17px;font-weight:700;color:#fff;background:linear-gradient(135deg,#12305c,var(--n));box-shadow:0 6px 20px rgba(11,31,58,.28);border-bottom:3px solid var(--g2);transition:.15s}
 .sm{padding:9px 14px;border-radius:10px;border:1px solid var(--g);background:none;color:var(--g);font-size:14px;margin:6px 6px 0 0;transition:.15s}.sm.r{border-color:var(--r);color:var(--r)}.sm.k{border-color:var(--ok);color:var(--ok)}
 .row{display:flex;gap:6px;align-items:center;margin-bottom:6px}.row b{flex:2;font-size:14px}.row input{margin:0;flex:1;padding:9px;min-width:0}.row a{color:var(--r);padding:6px;cursor:pointer}
-.st{display:flex;justify-content:space-between;align-items:center;padding:11px 2px;border-bottom:1px solid #222}.st.low span:last-child{color:var(--r);font-weight:700}
-.chip{font-size:11px;padding:3px 9px;border-radius:20px;border:1px solid}.PENDING{color:#f0b429}.APPROVED{color:var(--ok)}.CANCELLED{color:var(--r)}
-small,.mut{color:var(--m)}h3{margin:6px 0 10px;color:var(--g)}.tot{font-size:22px;font-weight:700;margin:10px 0;color:var(--g2)}
+.st{display:flex;justify-content:space-between;align-items:center;padding:11px 2px;border-bottom:1px solid rgba(11,31,58,.1)}.st.low span:last-child{color:var(--r);font-weight:700}
+.chip{font-size:11px;padding:3px 9px;border-radius:20px;border:1px solid}.PENDING{color:#b7791f}.APPROVED{color:var(--ok)}.CANCELLED{color:var(--r)}
+small,.mut{color:var(--m)}h3{margin:6px 0 10px;color:var(--n)}.tot{font-size:22px;font-weight:700;margin:10px 0;color:var(--n)}
 .tl{display:grid;grid-template-columns:1fr 1fr;gap:10px}.tl .card{text-align:center;padding:22px 8px;cursor:pointer;font-size:15px}.tl i{display:block;font-style:normal;font-size:30px;margin-bottom:6px}
-.seg{display:flex;gap:8px;margin-bottom:10px}.seg button{flex:1;padding:12px;border-radius:12px;border:1px solid var(--l);background:#101010;color:var(--m);font-size:15px}.seg .on{color:#1a1300;background:var(--g);border-color:var(--g);font-weight:700}
+.seg{display:flex;gap:8px;margin-bottom:10px}.seg button{flex:1;padding:12px;border-radius:12px;border:1px solid var(--l);background:#fff;color:var(--m);font-size:15px}.seg .on{color:#fff;background:var(--n);border-color:var(--n);font-weight:700}
 #ts{position:fixed;top:calc(70px + env(safe-area-inset-top));left:50%;transform:translateX(-50%);z-index:20;pointer-events:none}
-.ts{background:#111;border:1px solid var(--g);padding:11px 18px;border-radius:30px;margin-bottom:8px;animation:pop .25s ease;box-shadow:0 8px 30px #000;font-size:14px}.ts.e{border-color:var(--r);color:var(--r)}
+.ts{background:#fff;color:var(--t);border:1px solid var(--g);padding:11px 18px;border-radius:30px;margin-bottom:8px;animation:pop .25s ease;box-shadow:0 8px 30px rgba(11,31,58,.25);font-size:14px}.ts.e{border-color:var(--r);color:var(--r)}
 .lg{text-align:center;padding-top:6vh}.lg img{width:140px;height:140px;border-radius:32px;animation:glow 3s infinite,pop .6s ease}
 </style></head><body>
 <header id="hd"></header><main id="m"></main><nav id="nv"></nav><div id="ts"></div>
 <script>
-const API='PASTE_WEB_APP_URL_HERE',CO='ROYAL WELCOME COSMETICS',ADDR='Main Bazar Begumkot Shahdara Lahore';
+let API=localStorage.api||'https://script.google.com/macros/s/AKfycbzxeSOJs5GIPpvXCv2R79tXF3F7wHoYDgp9nsSOtHk5DGtyojNy5Jg1bl_2gpcgM_E/exec';const CO='ROYAL WELCOME COSMETICS',ADDR='Main Bazar Begumkot Shahdara Lahore';
 let S=JSON.parse(localStorage.sess||'null'),D={products:[],parties:[],bills:[],lr:{},deals:[]},oc=[],dc=[],tab='sale',cart=[],open=null,dip,LOGO,
 rates=JSON.parse(localStorage.rates||'{}'),snd=localStorage.snd!='0',AC;
 const $=i=>document.getElementById(i),v=i=>$(i).value,today=()=>new Date().toISOString().slice(0,10),M=()=>S&&S.role=='master',
@@ -59,12 +59,13 @@ function demo(o){const a=o.a;if(a=='login')return{name:'Demo',role:'master'};
 async function api(o){if(API.startsWith('PASTE'))return demo(o);if(S){o.email=S.e;o.pw=S.p}
  try{const r=await(await fetch(API,{method:'POST',body:JSON.stringify(o)})).json();if(r.error){bad(r.error);if(r.auth&&S)logout();return null}return r}catch(e){bad('Internet check karein');return null}}
 async function login(){S={e:v('em').trim().toLowerCase(),p:v('pw')};const r=await api({a:'login'});if(r){S.role=r.role;S.name=r.name;localStorage.sess=JSON.stringify(S);ok('Welcome '+r.name);load()}else S=null}
+function seturl(){const u=prompt('Web App URL paste karein',API);if(u){localStorage.api=u.trim();location.reload()}}
 function logout(){localStorage.removeItem('sess');S=null;show()}
 async function load(){const r=await api({a:'data'});if(r)D=r;show()}
 function go(t){tab=t;open=null;show()}
 function inst(){dip.prompt();dip=null;show()}
 function show(){const m=$('m');m.style.animation='none';m.offsetHeight;m.style.animation='';
- if(!S){$('hd').innerHTML='';$('nv').innerHTML='';m.innerHTML=`<div class="lg"><img src="logo.png"><h2 style="color:var(--g)">Royal Welcome Stock</h2><input id="em" type="email" placeholder="Email"><input id="pw" type="password" placeholder="Password"><button class="go" onclick="login()">Login</button></div>`;return}
+ if(!S){$('hd').innerHTML='';$('nv').innerHTML='';m.innerHTML=`<div class="lg"><img src="logo.png"><h2 style="color:var(--n)">Royal Welcome Stock</h2><input id="em" type="email" placeholder="Email"><input id="pw" type="password" placeholder="Password"><button class="go" onclick="login()">Login</button><p class="mut" style="margin-top:18px;font-size:12px;cursor:pointer" onclick="seturl()">Server URL badlein</p></div>`;return}
  const T={sale:['🧾','Sale'],bills:['📋','Bills'],stock:['📦','Stock'],online:['🌐','Online']};if(M())T.more=['⚙️','More'];
  const act=['prod','in','pay','rep','deal'].includes(tab)?'more':tab;
  $('nv').innerHTML=Object.keys(T).map(k=>`<button class="${k==act?'on':''}" onclick="go('${k}')"><i>${T[k][0]}</i>${T[k][1]}</button>`).join('');
