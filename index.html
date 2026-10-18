@@ -107,7 +107,7 @@ function inst(){dip.prompt();dip=null;show()}
 const SUB=['online','party','vendor','vpay','exp','cash','prod','in','pay','deal','rep'],TT={home:'Dashboard',sale:'New Invoice',bills:'Invoices',stock:'Inventory',more:'Menu',online:'Online Orders',prod:'Products',in:'Stock In (Purchase)',pay:'Receive Payment',party:'Parties',vendor:'Vendors',vpay:'Pay Vendor',exp:'Expenses',cash:'Cash Flow',deal:'Deals',rep:'Reports'};
 function show(){const m=$('m');document.body.classList.toggle('lgn',!S);m.style.animation='none';m.offsetHeight;m.style.animation='';
  if(!S){$('hd').innerHTML='';$('nv').innerHTML='';$('sb').innerHTML='';const ios=/iphone|ipad/i.test(navigator.userAgent)&&!navigator.standalone;
-  m.innerHTML=`<div class="lw"><img class="lgl" src="logo.png" onerror="this.style.visibility='hidden'"><h1>Royal Welcome</h1><p>Stock &amp; Billing Management</p><div class="lc"><label>Email</label><input id="em" type="email" autocomplete="username" placeholder="you@example.com"><label>Password</label><input id="pw" type="password" autocomplete="current-password" placeholder="Password" onkeydown="if(event.key=='Enter')login()"><button class="btn" onclick="login()">Sign In</button></div>${dip?`<button class="btn ghost" onclick="inst()">${ic('inst',18)} Install App</button>`:''}${ios?'<p style="margin-top:16px;font-size:13px">To install: tap <b>Share</b>, then <b>Add to Home Screen</b>.</p>':''}<a onclick="seturl()">Server settings</a> &nbsp;·&nbsp; <a onclick="test()">Test connection</a><br><small style="color:#7d8fae">App v13</small></div>`;return}
+  m.innerHTML=`<div class="lw"><img class="lgl" src="logo.png" onerror="this.style.visibility='hidden'"><h1>Royal Welcome</h1><p>Stock &amp; Billing Management</p><div class="lc"><label>Email</label><input id="em" type="email" autocomplete="username" placeholder="you@example.com"><label>Password</label><input id="pw" type="password" autocomplete="current-password" placeholder="Password" onkeydown="if(event.key=='Enter')login()"><button class="btn" onclick="login()">Sign In</button></div>${dip?`<button class="btn ghost" onclick="inst()">${ic('inst',18)} Install App</button>`:''}${ios?'<p style="margin-top:16px;font-size:13px">To install: tap <b>Share</b>, then <b>Add to Home Screen</b>.</p>':''}<a onclick="seturl()">Server settings</a> &nbsp;·&nbsp; <a onclick="test()">Test connection</a><br><small style="color:#7d8fae">App v15</small></div>`;return}
  const ROLE=S.role,ALLOW=ROLE=='master'?null:ROLE=='ceo'?['home','bills','stock','party','vendor','exp','cash','rep','more']:['sale','bills','stock','online'];
  if(!tab||(ALLOW&&!ALLOW.includes(tab)))tab=ROLE=='staff'?'sale':(ROLE=='master'||ROLE=='ceo')?'home':'sale';
  const nav=ROLE=='master'?[['home','home','Home'],['sale','receipt','Sale'],['bills','doc','Bills'],['stock','box','Stock'],['more','grid','More']]:ROLE=='ceo'?[['home','home','Home'],['bills','doc','Bills'],['stock','box','Stock'],['rep','chart','Reports'],['more','grid','More']]:[['sale','receipt','Sale'],['bills','doc','Bills'],['stock','box','Stock'],['online','globe','Online']];
@@ -243,25 +243,30 @@ function hdr(d,title,sub){d.setFillColor(...NAVY).rect(0,0,210,36,'F');d.setFill
 function foot(d){const n=d.getNumberOfPages();for(let i=1;i<=n;i++){d.setPage(i);d.setDrawColor(...GOLD).setLineWidth(.6).line(14,283,196,283);d.setFontSize(8).setTextColor(100).setFont('helvetica','normal').text(ADDR,105,288,{align:'center'});d.text('Page '+i+' of '+n,196,292,{align:'right'})}}
 const TS={theme:'grid',headStyles:{fillColor:NAVY,textColor:GOLD,fontSize:9},styles:{fontSize:9,cellPadding:2.6,lineColor:[225,229,238]},alternateRowStyles:{fillColor:[247,249,252]},margin:{left:14,right:14}},FS={fillColor:NAVY,textColor:GOLD,fontStyle:'bold'},RT={halign:'right'};
 async function finish(d,name,share){foot(d);if(share&&navigator.canShare){const f=new File([d.output('blob')],name,{type:'application/pdf'});if(navigator.canShare({files:[f]})){try{await navigator.share({files:[f],title:name});return}catch(e){}}}d.save(name)}
-function billPages(b){const A=1240,S0=A/900,H0=1273,tot=b.items.reduce((s,i)=>s+i.q*i.r,0),prev=+b.prev||0,items=b.items.slice(),chunks=[];
- while(items.length>15)chunks.push(items.splice(0,Math.min(21,items.length-1)));chunks.push(items);let off=0;
- return chunks.map((ch,pi)=>{const c=document.createElement('canvas');c.width=A;c.height=1754;const x=c.getContext('2d');x.scale(S0,S0);
-  const T=(s,px,py,f,col,al,mw)=>{x.font=f;x.fillStyle=col;x.textAlign=al||'left';x.fillText(String(s),px,py,mw||800)};
-  x.fillStyle='#fff';x.fillRect(0,0,900,H0);x.fillStyle='#0B1F3A';x.fillRect(0,0,900,150);x.fillStyle='#E2C15A';x.fillRect(0,150,900,5);
-  if(LG.complete&&LG.naturalWidth)x.drawImage(LG,30,27,96,96);
-  T(CO,150,66,'bold 31px Arial','#fff','left',480);T(ADDR,150,98,'19px Arial','#b9c6dd','left',480);
-  T('INVOICE',870,64,'bold 34px Arial','#E2C15A','right');T('No. '+b.id,870,98,'22px Arial','#fff','right');if(b.status!='APPROVED')T(b.status=='PENDING'?'PENDING APPROVAL':b.status,870,128,'bold 17px Arial','#FFB4A9','right');
-  T('BILLED TO',40,195,'16px Arial','#6B7385');T(b.party,40,232,'bold 32px Arial','#142036','left',520);
-  T('DATE',870,195,'16px Arial','#6B7385','right');T(b.date,870,230,'bold 24px Arial','#142036','right');T('Prepared by: '+(b.by||''),870,258,'18px Arial','#6B7385','right');
-  let y=284;x.fillStyle='#0B1F3A';x.fillRect(30,y,840,44);
-  T('#',46,y+29,'bold 17px Arial','#E2C15A');T('PRODUCT',86,y+29,'bold 17px Arial','#E2C15A');T('QTY',590,y+29,'bold 17px Arial','#E2C15A','right');T('RATE',730,y+29,'bold 17px Arial','#E2C15A','right');T('AMOUNT',864,y+29,'bold 17px Arial','#E2C15A','right');
-  y+=44;ch.forEach((t,i)=>{if(i%2==0){x.fillStyle='#F6F8FC';x.fillRect(30,y,840,38)}x.fillStyle='#E3E7EF';x.fillRect(30,y+37,840,1);
-   T(off+i+1,46,y+26,'19px Arial','#6B7385');T(t.p,86,y+26,'19px Arial','#142036','left',440);T(N(t.q),590,y+26,'19px Arial','#142036','right');T(N(t.r),730,y+26,'19px Arial','#142036','right');T(N(t.q*t.r),864,y+26,'bold 19px Arial','#142036','right');y+=38});off+=ch.length;
-  if(pi==chunks.length-1){y+=30;[['Invoice total',N(tot)],['Previous balance',N(prev)],['Paid now',N(b.paid)]].forEach(r=>{T(r[0],470,y,'21px Arial','#6B7385');T(r[1],864,y,'bold 23px Arial','#142036','right');y+=38});
-   x.fillStyle='#0B1F3A';x.fillRect(440,y-6,430,62);T('PAYABLE',462,y+33,'bold 20px Arial','#E2C15A');T('Rs '+N(prev+tot-b.paid),850,y+35,'bold 32px Arial','#E2C15A','right',290)}
-  else T('Continued on next page',870,y+28,'italic 17px Arial','#6B7385','right');
-  const sy=H0-150;x.fillStyle='#9aa3b5';x.fillRect(40,sy,230,2);x.fillRect(630,sy,230,2);T('Customer signature',40,sy+24,'16px Arial','#6B7385');T('Authorized signature',860,sy+24,'16px Arial','#6B7385','right');
-  x.fillStyle='#E2C15A';x.fillRect(0,H0-95,900,3);T(ADDR,450,H0-58,'18px Arial','#6B7385','center');if(chunks.length>1)T('Page '+(pi+1)+' of '+chunks.length,870,H0-20,'15px Arial','#6B7385','right');
+function drawBill(x,b,o){const k=o.k,oy=o.oy,tot=b.items.reduce((s,i)=>s+i.q*i.r,0),prev=+b.prev||0,sh=o.hl,Y=v=>oy+v*k,
+ T=(s,px,py,f,w,col,al,mw)=>{x.font=(w||'normal')+' '+Math.round(f*k)+'px Arial';x.fillStyle=col||'#000';x.textAlign=al||'left';if(mw)x.fillText(String(s),px,Y(py),mw);else x.fillText(String(s),px,Y(py))},
+ R=(px,py,pw,ph,col)=>{x.fillStyle=col;x.fillRect(px,Y(py),pw,ph*k)},lx=30+54*k+14;
+ if(LG.complete&&LG.naturalWidth)x.drawImage(LG,30,Y(12),54*k,54*k);
+ T(CO,lx,36,22,'bold','#000','left',540);T(ADDR,lx,57,12.5,'normal','#333','left',540);
+ T('INVOICE',870,36,24,'bold','#000','right');T('No. '+b.id,870,57,15,'bold','#000','right');
+ if(o.copy)T(o.copy,870,76,11,'bold','#333','right');
+ if(b.status!='APPROVED')T(b.status=='PENDING'?'PENDING APPROVAL':b.status,lx,76,11,'bold','#000');
+ R(30,84,840,1.6,'#000');
+ T('BILLED TO',30,103,10.5,'normal','#555');T(b.party,30,126,20,'bold','#000','left',520);
+ T('DATE',870,103,10.5,'normal','#555','right');T(b.date,870,126,15,'bold','#000','right');
+ R(30,138,840,24,'#E4E4E4');R(30,138,840,1.2,'#000');R(30,161,840,1.2,'#000');
+ T('#',40,155,12,'bold');T('PRODUCT',76,155,12,'bold');T('QTY',590,155,12,'bold','#000','right');T('RATE',730,155,12,'bold','#000','right');T('AMOUNT',862,155,12,'bold','#000','right');
+ let y=162;o.items.forEach((t,i)=>{T(o.off+i+1,40,y+17,13,'normal','#444');T(t.p,76,y+17,13.5,'normal','#000','left',460);T(N(t.q),590,y+17,13.5,'normal','#000','right');T(N(t.r),730,y+17,13.5,'normal','#000','right');T(N(t.q*t.r),862,y+17,13.5,'bold','#000','right');R(30,y+24,840,.8,'#BDBDBD');y+=25});
+ if(o.last){y+=12;[['Invoice total',N(tot)],['Previous balance',N(prev)],['Paid now',N(b.paid)]].forEach(r=>{T(r[0],470,y+14,13,'normal','#333');T(r[1],862,y+14,14,'bold','#000','right');y+=21});
+  y+=6;x.strokeStyle='#000';x.lineWidth=2;x.strokeRect(440,Y(y),430,34*k);T('PAYABLE',452,y+23,14,'bold');T('Rs '+N(prev+tot-b.paid),858,y+25,20,'bold','#000','right',280)}
+ else T('Continued on next page...',870,y+16,12,'italic','#444','right');
+ R(40,sh-50,200,1,'#000');R(660,sh-50,200,1,'#000');T('Customer signature',40,sh-37,10.5,'normal','#555');T('Authorized signature',860,sh-37,10.5,'normal','#555','right');
+ R(30,sh-26,840,1,'#000');T(ADDR,450,sh-11,10.5,'normal','#444','center');if(o.page)T(o.page,870,sh-11,10.5,'normal','#444','right')}
+function billPages(b){const A=1240,S0=A/900,HL=636,items=b.items.slice(),chunks=[];
+ while(items.length>11)chunks.push(items.splice(0,Math.min(16,items.length-1)));chunks.push(items);let off=0;
+ return chunks.map((ch,pi)=>{const c=document.createElement('canvas');c.width=A;c.height=1754;const x=c.getContext('2d');x.scale(S0,S0);x.fillStyle='#fff';x.fillRect(0,0,900,1273);
+  drawBill(x,b,{k:1,oy:0,hl:HL,items:ch,off,last:pi==chunks.length-1,page:chunks.length>1?'Page '+(pi+1)+' of '+chunks.length:''});off+=ch.length;
+  x.setLineDash([8,5]);x.strokeStyle='#888';x.lineWidth=1;x.beginPath();x.moveTo(15,HL+2);x.lineTo(885,HL+2);x.stroke();x.setLineDash([]);x.fillStyle='#888';x.font='11px Arial';x.textAlign='center';x.fillText('- - - cut here (half A4) - - -',450,HL+15);
   return c})}
 async function report(){const t=v('rt'),f=v('f'),to=v('t'),party=t=='khata'?v('rpar'):t=='vendor'?v('rvend'):t=='recv'?v('rf1'):t=='paid'?v('rf2'):'';if((t=='khata'||t=='vendor')&&!party)return bad('Select a '+(t=='khata'?'party':'vendor'));
  const r=await api({a:'rep',t,from:f,to,party});if(!r)return;const d=new jspdf.jsPDF(),rg=(f||'Beginning')+'  to  '+(to||'Today'),Y=d.internal.pageSize;
