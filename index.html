@@ -57,7 +57,7 @@ input:focus,select:focus{border-color:var(--n2);box-shadow:0 0 0 3px rgba(22,54,
 .lw{max-width:380px;margin:auto;padding:9vh 22px 30px;text-align:center;color:#fff}.lw .lgl{width:128px;border-radius:30px;animation:glow 3s infinite,pop .6s both}.lw h1{margin:16px 0 2px;font-size:25px}.lw p{margin:0 0 22px;color:#aab8d0}
 .lc{background:#fff;color:var(--t);border-radius:20px;padding:20px;text-align:left;box-shadow:0 20px 50px rgba(0,0,0,.3);animation:rise .6s both .1s}.lw a{display:inline-block;margin-top:18px;color:#aab8d0;font-size:12px;cursor:pointer}.lw .btn.ghost{margin-top:12px;background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.25)}
 .ac{position:relative}.acl{display:none;position:absolute;left:0;right:0;top:calc(100% - 10px);background:#fff;border:1px solid var(--b);border-radius:12px;box-shadow:0 14px 34px rgba(11,31,58,.2);max-height:250px;overflow:auto;z-index:40}.acl div{padding:12px 14px;border-bottom:1px solid var(--b);display:flex;justify-content:space-between;gap:10px;cursor:pointer}.acl div:last-child{border:0}.acl small{color:var(--m)}.card.top{position:relative;z-index:6}
-.ov{position:fixed;inset:0;z-index:80;background:rgba(11,31,58,.85);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:16px;animation:pop .25s both}.ov .pv{width:100%;max-width:640px;max-height:74vh;overflow:auto;display:flex;flex-direction:column;gap:10px;align-items:center}.ov img{max-width:100%;border-radius:10px;box-shadow:0 20px 50px #000}.ov .bt{display:flex;gap:10px;margin-top:14px;width:100%;max-width:420px}.ov .bt .btn{padding:12px}.ov .bt .btn:last-child{flex:0 0 52px}
+.ov{position:fixed;inset:0;z-index:80;background:rgba(11,31,58,.85);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:16px;animation:pop .25s both}.ov .pv{width:100%;max-width:640px;max-height:74vh;overflow:auto;display:flex;flex-direction:column;gap:10px;align-items:center}.ov img{max-width:100%;border-radius:10px;box-shadow:0 20px 50px #000}.ov .bt2{display:flex;gap:10px;margin-top:14px;width:100%;max-width:560px}.ov .bt2 .btn{padding:12px;font-size:14px}.ov .bt{display:flex;gap:10px;margin-top:14px;width:100%;max-width:420px}.ov .bt .btn{padding:12px}.ov .bt .btn:last-child{flex:0 0 52px}
 #sb{display:none}.chart{width:100%;height:auto}.two{display:block}.bills{display:block}
 @media(min-width:900px){body{padding-bottom:0;padding-left:250px}body.lgn{padding-left:0}nav{display:none}
 #sb{display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;width:250px;background:var(--n);z-index:30;padding:16px 12px;overflow-y:auto}body.lgn #sb{display:none}
@@ -93,7 +93,9 @@ const tap=()=>beep(660,.05),chime=()=>{beep(784,.12,'sine',.09);beep(1175,.22,'s
 document.addEventListener('click',e=>{if(e.target.closest('button,.tile,.card.bill,.mt .card,.kpi'))tap()});
 function toast(m,er){const d=document.createElement('div');d.className='ts'+(er?' e':'');d.textContent=m;$('ts').appendChild(d);er?buzz():chime();setTimeout(()=>d.remove(),2800)}
 const ok=m=>toast(m),bad=m=>toast(m,1);
-async function api(o){if(S){o.email=S.e;o.pw=S.p}document.body.classList.add('busy');
+const WR=new Set(['sale','online','addp','setbuy','in','pay','vpay','addvendor','addparty','exp','delexp','setcash','adddeal','deldeal','approve','cancel','vpaytype']);let GUARD=0,RID='';
+const guard=f=>async function(...a){if(GUARD)return;GUARD=1;RID=Math.random().toString(36).slice(2)+Date.now().toString(36);try{return await f.apply(this,a)}finally{GUARD=0}};
+async function api(o){if(WR.has(o.a))o.rid=RID;if(S){o.email=S.e;o.pw=S.p}document.body.classList.add('busy');
  let tx;try{tx=await(await fetch(API,{method:'POST',body:JSON.stringify(o)})).text()}catch(e){bad('Cannot reach the server. Check internet, the Web App URL, and that access is set to Anyone.');return null}finally{document.body.classList.remove('busy')}
  let r;try{r=JSON.parse(tx)}catch(e){bad('Server replied with a page, not data. In Apps Script set "Who has access" to Anyone and deploy a New version.');return null}
  if(r.error){bad(r.error);if(r.auth&&S)logout();return null}return r}
@@ -107,7 +109,7 @@ function inst(){dip.prompt();dip=null;show()}
 const SUB=['online','party','vendor','vpay','exp','cash','prod','in','pay','deal','rep'],TT={home:'Dashboard',sale:'New Invoice',bills:'Invoices',stock:'Inventory',more:'Menu',online:'Online Orders',prod:'Products',in:'Stock In (Purchase)',pay:'Receive Payment',party:'Parties',vendor:'Vendors',vpay:'Pay Vendor',exp:'Expenses',cash:'Cash Flow',deal:'Deals',rep:'Reports'};
 function show(){const m=$('m');document.body.classList.toggle('lgn',!S);m.style.animation='none';m.offsetHeight;m.style.animation='';
  if(!S){$('hd').innerHTML='';$('nv').innerHTML='';$('sb').innerHTML='';const ios=/iphone|ipad/i.test(navigator.userAgent)&&!navigator.standalone;
-  m.innerHTML=`<div class="lw"><img class="lgl" src="logo.png" onerror="this.style.visibility='hidden'"><h1>Royal Welcome</h1><p>Stock &amp; Billing Management</p><div class="lc"><label>Email</label><input id="em" type="email" autocomplete="username" placeholder="you@example.com"><label>Password</label><input id="pw" type="password" autocomplete="current-password" placeholder="Password" onkeydown="if(event.key=='Enter')login()"><button class="btn" onclick="login()">Sign In</button></div>${dip?`<button class="btn ghost" onclick="inst()">${ic('inst',18)} Install App</button>`:''}${ios?'<p style="margin-top:16px;font-size:13px">To install: tap <b>Share</b>, then <b>Add to Home Screen</b>.</p>':''}<a onclick="seturl()">Server settings</a> &nbsp;·&nbsp; <a onclick="test()">Test connection</a><br><small style="color:#7d8fae">App v15</small></div>`;return}
+  m.innerHTML=`<div class="lw"><img class="lgl" src="logo.png" onerror="this.style.visibility='hidden'"><h1>Royal Welcome</h1><p>Stock &amp; Billing Management</p><div class="lc"><label>Email</label><input id="em" type="email" autocomplete="username" placeholder="you@example.com"><label>Password</label><input id="pw" type="password" autocomplete="current-password" placeholder="Password" onkeydown="if(event.key=='Enter')login()"><button class="btn" onclick="login()">Sign In</button></div>${dip?`<button class="btn ghost" onclick="inst()">${ic('inst',18)} Install App</button>`:''}${ios?'<p style="margin-top:16px;font-size:13px">To install: tap <b>Share</b>, then <b>Add to Home Screen</b>.</p>':''}<a onclick="seturl()">Server settings</a> &nbsp;·&nbsp; <a onclick="test()">Test connection</a><br><small style="color:#7d8fae">App v17</small></div>`;return}
  const ROLE=S.role,ALLOW=ROLE=='master'?null:ROLE=='ceo'?['home','bills','stock','party','vendor','exp','cash','rep','more']:['sale','bills','stock','online'];
  if(!tab||(ALLOW&&!ALLOW.includes(tab)))tab=ROLE=='staff'?'sale':(ROLE=='master'||ROLE=='ceo')?'home':'sale';
  const nav=ROLE=='master'?[['home','home','Home'],['sale','receipt','Sale'],['bills','doc','Bills'],['stock','box','Stock'],['more','grid','More']]:ROLE=='ceo'?[['home','home','Home'],['bills','doc','Bills'],['stock','box','Stock'],['rep','chart','Reports'],['more','grid','More']]:[['sale','receipt','Sale'],['bills','doc','Bills'],['stock','box','Stock'],['online','globe','Online']];
@@ -187,7 +189,7 @@ async function sale(){const party=v('pt').trim();if(!party)return bad('Enter the
  if(cart.some(c=>!(c.q>0)||!(c.r>0)))return bad('Enter quantity and rate for every item');
  const items=cart.map(c=>({p:c.p,q:+c.q,r:+c.r})),paid=+v('pd')||0,date=v('d'),r=await api({a:'sale',date,party,items,paid});if(!r)return;
  items.forEach(i=>rates[i.p]=i.r);localStorage.rates=JSON.stringify(rates);
- const bill={id:r.id,date,party,items,total:items.reduce((s,i)=>s+i.q*i.r,0),paid,status:'PENDING',by:S.name,prev:r.prev};dlAll(billPages(bill),r.id);
+ const bill={id:r.id,date,party,items,total:items.reduce((s,i)=>s+i.q*i.r,0),paid,status:'PENDING',by:S.name,prev:r.prev};
  cart=[];ok('Invoice '+r.id+' saved. Awaiting approval.');tab='bills';ob=r.id;bf='ALL';await load();showBill(bill)}
 const bp=id=>showBill(D.bills.find(x=>x.id==id));
 async function act(id,a){if(!confirm((a=='approve'?'Approve ':'Cancel ')+id+'?'+(a=='approve'?' Stock will be deducted.':' Stock will be restored if it was approved.')))return;if(await api({a,bill:id})){ok(a=='approve'?'Invoice approved':'Invoice cancelled');load()}}
@@ -228,7 +230,14 @@ function slipCanvas(p){const V=p.kind=='v',c=document.createElement('canvas');c.
  x.fillStyle='#E3E7EF';x.fillRect(40,800,720,2);T((V?'Paid by: ':'Received by: ')+(p.by||''),40,845,'22px Arial','#6B7385');
  x.fillStyle='#E2C15A';x.fillRect(0,894,800,3);T(V?'Payment voucher':'Thank you for your payment',400,935,'bold 22px Arial','#0B1F3A','center');return c}
 function showImg(cs,base){cs=[].concat(cs);SL={cs,base};const o=document.createElement('div');o.className='ov';o.id='ov';o.innerHTML=`<div class="pv">${cs.map(c=>`<img src="${c.toDataURL('image/jpeg',.9)}">`).join('')}</div><div class="bt"><button class="btn" onclick="slipShare()">${ic('share',18)} Share</button><button class="btn ghost" onclick="slipSave()">${ic('down',18)} JPG</button><button class="btn ghost" onclick="$('ov').remove()">${ic('x',18)}</button></div>`;document.body.appendChild(o)}
-const showSlip=p=>showImg(slipCanvas(p),'Receipt-'+p.id),showBill=b=>showImg(billPages(b),b.id);
+const showSlip=p=>showImg(slipCanvas(p),'Receipt-'+p.id);
+function billMode(b,m){return m=='half'||m=='full'?m:(b.items.length>11?'full':'half')}
+function billJpgPages(b,rm){if(rm=='full')return billFull(b);
+ return billHalf(b).map(hc=>{const c=document.createElement('canvas');c.width=1240;c.height=1754;const x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,1240,1754);x.drawImage(hc,0,0,1240,877);
+  x.setLineDash([10,7]);x.strokeStyle='#888';x.lineWidth=1.5;x.beginPath();x.moveTo(20,880);x.lineTo(1220,880);x.stroke();x.setLineDash([]);x.fillStyle='#888';x.font='15px Arial';x.textAlign='center';x.fillText('- - - cut here (half A4) - - -',620,902);return c})}
+function showBill(b,m){m=m||'auto';const rm=billMode(b,m),cs=billJpgPages(b,rm),lab=rm=='half'?'half A4':'full A4';SL={cs,base:b.id+(rm=='half'?'-half-A4':'-A4'),b,m,rm};
+ let o=$('ov');if(!o){o=document.createElement('div');o.className='ov';o.id='ov';document.body.appendChild(o)}
+ o.innerHTML=`<div class="pv">${cs.map(c=>`<img src="${c.toDataURL('image/jpeg',.85)}">`).join('')}</div><div class="seg" style="width:100%;max-width:560px;margin:12px 0 0">${[['auto','Auto size'],['half','Half A4'],['full','Full A4']].map(x=>`<button class="${x[0]==m?'on':''}" onclick="showBill(SL.b,'${x[0]}')">${x[1]}</button>`).join('')}</div><div class="bt2"><button class="btn" onclick="billPdf()">${ic('down',18)} PDF · ${lab}</button><button class="btn" onclick="slipSave()">${ic('down',18)} JPG · ${lab}</button></div><div class="bt"><button class="btn ghost" onclick="slipShare()">${ic('share',18)} Share JPG</button><button class="btn ghost" onclick="billShare()">${ic('share',18)} Share PDF</button><button class="btn ghost" onclick="$('ov').remove()">${ic('x',18)}</button></div>`}
 const fn=(base,n,i)=>n>1?base+'-'+(i+1)+'.jpg':base+'.jpg';
 function dlAll(cs,base){cs=[].concat(cs);cs.forEach((c,i)=>setTimeout(()=>c.toBlob(b=>{const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=fn(base,cs.length,i);a.click()},'image/jpeg',.92),i*400))}
 function slipSave(){dlAll(SL.cs,SL.base)}
@@ -262,12 +271,16 @@ function drawBill(x,b,o){const k=o.k,oy=o.oy,tot=b.items.reduce((s,i)=>s+i.q*i.r
  else T('Continued on next page...',870,y+16,12,'italic','#444','right');
  R(40,sh-50,200,1,'#000');R(660,sh-50,200,1,'#000');T('Customer signature',40,sh-37,10.5,'normal','#555');T('Authorized signature',860,sh-37,10.5,'normal','#555','right');
  R(30,sh-26,840,1,'#000');T(ADDR,450,sh-11,10.5,'normal','#444','center');if(o.page)T(o.page,870,sh-11,10.5,'normal','#444','right')}
-function billPages(b){const A=1240,S0=A/900,HL=636,items=b.items.slice(),chunks=[];
- while(items.length>11)chunks.push(items.splice(0,Math.min(16,items.length-1)));chunks.push(items);let off=0;
- return chunks.map((ch,pi)=>{const c=document.createElement('canvas');c.width=A;c.height=1754;const x=c.getContext('2d');x.scale(S0,S0);x.fillStyle='#fff';x.fillRect(0,0,900,1273);
-  drawBill(x,b,{k:1,oy:0,hl:HL,items:ch,off,last:pi==chunks.length-1,page:chunks.length>1?'Page '+(pi+1)+' of '+chunks.length:''});off+=ch.length;
-  x.setLineDash([8,5]);x.strokeStyle='#888';x.lineWidth=1;x.beginPath();x.moveTo(15,HL+2);x.lineTo(885,HL+2);x.stroke();x.setLineDash([]);x.fillStyle='#888';x.font='11px Arial';x.textAlign='center';x.fillText('- - - cut here (half A4) - - -',450,HL+15);
-  return c})}
+function billFull(b){const A=1240,S0=A/900,H0=1273,k=1.45,hl=H0/k,items=b.items.slice(),chunks=[];
+ while(items.length>21)chunks.push(items.splice(0,Math.min(26,items.length-1)));chunks.push(items);let off=0;
+ return chunks.map((ch,pi)=>{const c=document.createElement('canvas');c.width=A;c.height=1754;const x=c.getContext('2d');x.scale(S0,S0);x.fillStyle='#fff';x.fillRect(0,0,900,H0);
+  drawBill(x,b,{k,oy:0,hl,items:ch,off,last:pi==chunks.length-1,page:chunks.length>1?'Page '+(pi+1)+' of '+chunks.length:''});off+=ch.length;return c})}
+function billHalf(b){const items=b.items.slice(),chunks=[];while(items.length>11)chunks.push(items.splice(0,Math.min(16,items.length-1)));chunks.push(items);let off=0;
+ return chunks.map((ch,pi)=>{const c=document.createElement('canvas');c.width=1800;c.height=1273;const x=c.getContext('2d');x.scale(2,2);x.fillStyle='#fff';x.fillRect(0,0,900,637);
+  drawBill(x,b,{k:1,oy:0,hl:636,items:ch,off,last:pi==chunks.length-1,page:chunks.length>1?'Page '+(pi+1)+' of '+chunks.length:''});off+=ch.length;return c})}
+function pdfFor(b,rm){const full=rm=='full',cs=full?billFull(b):billHalf(b),fmt=full?'a4':[210,148.5],o=full?'p':'l',d=new jspdf.jsPDF({orientation:o,unit:'mm',format:fmt});cs.forEach((c,i)=>{if(i)d.addPage(fmt,o);d.addImage(c.toDataURL('image/jpeg',.92),'JPEG',0,0,210,full?297:148.5)});return d}
+function billPdf(){pdfFor(SL.b,SL.rm).save(SL.b.id+(SL.rm=='half'?'-half-A4':'-A4')+'.pdf')}
+async function billShare(){const f=[new File([pdfFor(SL.b,SL.rm).output('blob')],SL.b.id+'.pdf',{type:'application/pdf'})];if(navigator.canShare&&navigator.canShare({files:f})){try{await navigator.share({files:f,title:SL.b.id})}catch(e){}return}billPdf();bad('Share not supported here. PDF downloaded, attach it in WhatsApp.')}
 async function report(){const t=v('rt'),f=v('f'),to=v('t'),party=t=='khata'?v('rpar'):t=='vendor'?v('rvend'):t=='recv'?v('rf1'):t=='paid'?v('rf2'):'';if((t=='khata'||t=='vendor')&&!party)return bad('Select a '+(t=='khata'?'party':'vendor'));
  const r=await api({a:'rep',t,from:f,to,party});if(!r)return;const d=new jspdf.jsPDF(),rg=(f||'Beginning')+'  to  '+(to||'Today'),Y=d.internal.pageSize;
  const T=(title,sub)=>{hdr(d,title,sub)};
@@ -298,5 +311,6 @@ async function report(){const t=v('rt'),f=v('f'),to=v('t'),party=t=='khata'?v('r
  else{T('STOCK REPORT','As on '+today());const A=r.rows.reduce((s,x)=>s+x[1]*x[2],0);
   d.autoTable({...TS,startY:46,head:[['Product','Stock','Purchase price','Stock value']],body:r.rows.map(x=>[x[0],N(x[1]),N(x[2]),N(x[1]*x[2])]),foot:[['','','Total value','Rs '+N(A)]],footStyles:FS,columnStyles:{1:RT,2:RT,3:RT}})}
  finish(d,t+'-report-'+today()+'.pdf');ok('PDF downloaded')}
+sale=guard(sale);pay=guard(pay);payVendor=guard(payVendor);saveExp=guard(saveExp);stockIn=guard(stockIn);online=guard(online);addp=guard(addp);addParty=guard(addParty);addVendor=guard(addVendor);saveDeal=guard(saveDeal);setCash=guard(setCash);act=guard(act);delExp=guard(delExp);delDeal=guard(delDeal);setbuy=guard(setbuy);
 S?load():show();setTimeout(()=>{$('sp').style.opacity=0;setTimeout(()=>$('sp').remove(),500)},900);
 </script></body></html>
